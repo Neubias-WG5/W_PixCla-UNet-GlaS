@@ -63,7 +63,7 @@
       "command-line-flag": "--@id"
     },
     {
-      "default-value": "false",
+      "default-value": false,
       "name": "Use CRF",
       "description": "Use conditional random fields as pre-processing",
       "set-by-server": false,
