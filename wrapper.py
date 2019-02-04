@@ -8,7 +8,7 @@ from torchvision import transforms
 import pydensecrf.densecrf as dcrf
 from cytomine.models import Job
 from neubiaswg5 import CLASS_PIXCLA
-from neubiaswg5.helpers import NeubiasJob, prepare_data, upload_data, upload_metrics
+from neubiaswg5.helpers import get_discipline, NeubiasJob, prepare_data, upload_data, upload_metrics
 from neubiaswg5.helpers.data_upload import imwrite, imread
 
 from unet import UNet
@@ -48,7 +48,7 @@ def predict_img(net,
                 out_threshold=0.5,
                 use_dense_crf=True):
     net.eval()
-    height, width = full_img.shape
+    height, width, channel = full_img.shape
     img = cv2.resize(full_img, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
     img = np.array(img, dtype=np.float32)
     img = normalize(img)
@@ -85,7 +85,7 @@ def load_model(filepath):
 
 def main(argv):
     with NeubiasJob.from_cli(argv) as nj:
-        problem_cls = CLASS_PIXCLA
+        problem_cls = get_discipline(nj, default=CLASS_PIXCLA)
         is_2d = True
 
         nj.job.update(status=Job.RUNNING, progress=0, statusComment="Initialisation...")
