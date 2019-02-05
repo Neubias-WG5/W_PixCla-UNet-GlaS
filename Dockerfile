@@ -1,18 +1,15 @@
 FROM python:3.6
 
 # --------------------------------------------------------------------------------------------
-# Install python dependencies
-RUN pip install requests==2.21.0 \
-    requests-toolbelt==0.8.0 \
-    cachecontrol==0.12.5 \
-    six==1.12.0 \
-    future==0.17.1
-
+# Install Cytomine python client
+RUN git clone https://github.com/cytomine-uliege/Cytomine-python-client.git
+RUN cd /Cytomine-python-client && git checkout tags/v2.2.0 && pip install .
+RUN rm -r /Cytomine-python-client
 
 # --------------------------------------------------------------------------------------------
 # Install Neubias-W5-Utilities (annotation exporter, compute metrics, helpers,...)
 RUN git clone https://github.com/Neubias-WG5/neubiaswg5-utilities.git
-RUN cd /neubiaswg5-utilities/ && git checkout tags/v0.5.2 && pip install .
+RUN cd /neubiaswg5-utilities/ && git checkout tags/v0.5.2a && pip install .
 
 # Metric for PixCla is pure python so don't need java, nor binaries
 # RUN apt-get update && apt-get install openjdk-8-jdk -y && apt-get cleandock
@@ -20,15 +17,6 @@ RUN cd /neubiaswg5-utilities/ && git checkout tags/v0.5.2 && pip install .
 # RUN cp /neubiaswg5-utilities/bin/* /usr/bin/
 
 RUN rm -r /neubiaswg5-utilities
-
-
-# --------------------------------------------------------------------------------------------
-# Install Cytomine python client
-RUN git clone https://github.com/cytomine-uliege/Cytomine-python-client.git && \
-    cd Cytomine-python-client && \
-    python setup.py build && \
-    python setup.py install
-
 
 # --------------------------------------------------------------------------------------------
 # Install pytorch
