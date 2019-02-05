@@ -107,7 +107,7 @@ def main(argv):
 
             imwrite(
                 path=os.path.join(out_path, in_image.filename),
-                image=(mask * 255).astype(np.uint8),
+                image=mask.astype(np.uint8),
                 is_2d=is_2d
             )
 
