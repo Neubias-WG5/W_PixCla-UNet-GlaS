@@ -89,7 +89,7 @@ def main(argv):
         is_2d = True
 
         nj.job.update(status=Job.RUNNING, progress=0, statusComment="Initialisation...")
-        in_images, gt_images, in_path, gt_path, out_path, tmp_path = prepare_data(problem_cls, nj, is_2d=is_2d, **nj.flags)
+        in_images, gt_images, in_path, gt_path, out_path, tmp_path = prepare_data(problem_cls, nj, **nj.flags)
 
         # 2. Call the image analysis workflow
         nj.job.update(progress=10, statusComment="Load model...")

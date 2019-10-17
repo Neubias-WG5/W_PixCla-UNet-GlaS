@@ -1,22 +1,18 @@
-FROM python:3.6
+FROM python:3.6.9-stretch
 
 # --------------------------------------------------------------------------------------------
 # Install Cytomine python client
-RUN git clone https://github.com/cytomine-uliege/Cytomine-python-client.git
-RUN cd /Cytomine-python-client && git checkout tags/v2.2.0 && pip install .
-RUN rm -r /Cytomine-python-client
+RUN git clone https://github.com/cytomine-uliege/Cytomine-python-client.git && \
+    cd /Cytomine-python-client && git checkout tags/v2.3.0.poc.1 && pip install . && \
+    rm -r /Cytomine-python-client
 
 # --------------------------------------------------------------------------------------------
 # Install Neubias-W5-Utilities (annotation exporter, compute metrics, helpers,...)
-RUN git clone https://github.com/Neubias-WG5/neubiaswg5-utilities.git && \
-        cd /neubiaswg5-utilities/ && git checkout tags/v0.6.8 && pip install .
-
 # Metric for PixCla is pure python so don't need java, nor binaries
-# RUN apt-get update && apt-get install openjdk-8-jdk -y && apt-get cleandock
-# RUN chmod +x /neubiaswg5-utilities/bin/*
-# RUN cp /neubiaswg5-utilities/bin/* /usr/bin/
-
-RUN rm -r /neubiaswg5-utilities
+RUN apt-get update && apt-get install libgeos-dev -y && apt-get clean
+RUN git clone https://github.com/Neubias-WG5/neubiaswg5-utilities.git && \
+    cd /neubiaswg5-utilities/ && git checkout tags/v0.8.0 && pip install . && \
+    rm -r /neubiaswg5-utilities
 
 # --------------------------------------------------------------------------------------------
 # Install pytorch
