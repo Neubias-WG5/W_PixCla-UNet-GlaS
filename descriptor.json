@@ -1,5 +1,5 @@
 {
-  "command-line": "python wrapper.py CYTOMINE_HOST CYTOMINE_PUBLIC_KEY CYTOMINE_PRIVATE_KEY CYTOMINE_ID_PROJECT CYTOMINE_ID_SOFTWARE THRESHOLD USE_CRF ",
+  "command-line": "python wrapper.py CYTOMINE_HOST CYTOMINE_PUBLIC_KEY CYTOMINE_PRIVATE_KEY CYTOMINE_ID_PROJECT CYTOMINE_ID_SOFTWARE THRESHOLD",
   "inputs": [
     {
       "name": "Cytomine host",
@@ -60,17 +60,6 @@
       "optional": true,
       "id": "threshold",
       "type": "Number",
-      "command-line-flag": "--@id"
-    },
-    {
-      "default-value": false,
-      "name": "Use CRF",
-      "description": "Use conditional random fields as pre-processing",
-      "set-by-server": false,
-      "value-key": "@ID",
-      "optional": true,
-      "id": "use_crf",
-      "type": "Boolean",
       "command-line-flag": "--@id"
     }
   ],

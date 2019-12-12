@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 import torch
 from torchvision import transforms
-import pydensecrf.densecrf as dcrf
 from cytomine.models import Job
 from neubiaswg5 import CLASS_PIXCLA
 from neubiaswg5.helpers import get_discipline, NeubiasJob, prepare_data, upload_data, upload_metrics
@@ -14,39 +13,11 @@ from neubiaswg5.helpers.data_upload import imwrite, imread
 from unet import UNet
 
 
-def dense_crf(img, output_probs):
-    h = output_probs.shape[0]
-    w = output_probs.shape[1]
-
-    output_probs = np.expand_dims(output_probs, 0)
-    output_probs = np.append(1 - output_probs, output_probs, axis=0)
-
-    d = dcrf.DenseCRF2D(w, h, 2)
-    U = -np.log(output_probs)
-    U = U.reshape((2, -1))
-    U = np.ascontiguousarray(U)
-    img = np.ascontiguousarray(img)
-
-    d.setUnaryEnergy(U)
-
-    d.addPairwiseGaussian(sxy=20, compat=3)
-    d.addPairwiseBilateral(sxy=30, srgb=20, rgbim=img, compat=10)
-
-    Q = d.inference(5)
-    Q = np.argmax(np.array(Q), axis=0).reshape((h, w))
-
-    return Q
-
-
 def normalize(x):
     return x / 255
 
 
-def predict_img(net,
-                full_img,
-                scale_factor=0.5,
-                out_threshold=0.5,
-                use_dense_crf=True):
+def predict_img(net, full_img, scale_factor=0.5, out_threshold=0.5):
     net.eval()
     height, width, channel = full_img.shape
     img = cv2.resize(full_img, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
@@ -69,9 +40,6 @@ def predict_img(net,
 
         proba = tf(proba.cpu())
         mask_np = proba.squeeze().cpu().numpy()
-
-    if use_dense_crf:
-        mask_np = dense_crf(np.array(full_img).astype(np.uint8), mask_np)
 
     return mask_np > out_threshold
 
@@ -101,8 +69,7 @@ def main(argv):
             mask = predict_img(
                 net=net, full_img=img,
                 scale_factor=0.5,  # value used at training
-                out_threshold=nj.parameters.threshold,
-                use_dense_crf=nj.parameters.use_crf
+                out_threshold=nj.parameters.threshold
             )
 
             imwrite(

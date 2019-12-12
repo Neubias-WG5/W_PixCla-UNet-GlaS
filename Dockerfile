@@ -11,13 +11,13 @@ RUN git clone https://github.com/cytomine-uliege/Cytomine-python-client.git && \
 # Metric for PixCla is pure python so don't need java, nor binaries
 RUN apt-get update && apt-get install libgeos-dev -y && apt-get clean
 RUN git clone https://github.com/Neubias-WG5/neubiaswg5-utilities.git && \
-    cd /neubiaswg5-utilities/ && git checkout tags/v0.8.0 && pip install . && \
+    cd /neubiaswg5-utilities/ && git checkout tags/v0.8.7 && pip install . && \
     rm -r /neubiaswg5-utilities
 
 # --------------------------------------------------------------------------------------------
 # Install pytorch
 RUN pip install https://download.pytorch.org/whl/cpu/torch-1.0.0-cp36-cp36m-linux_x86_64.whl
-RUN pip install torchvision==0.2.1 pydensecrf==1.0rc3
+RUN pip install torchvision==0.2.1
 
 # --------------------------------------------------------------------------------------------
 # Install scripts and models
