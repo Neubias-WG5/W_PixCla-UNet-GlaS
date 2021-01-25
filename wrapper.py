@@ -2,13 +2,13 @@ import os
 import sys
 
 import cv2
-import numpy as np
 import torch
+import numpy as np
 from torchvision import transforms
 from cytomine.models import Job
-from neubiaswg5 import CLASS_PIXCLA
-from neubiaswg5.helpers import get_discipline, NeubiasJob, prepare_data, upload_data, upload_metrics
-from neubiaswg5.helpers.data_upload import imwrite, imread
+from biaflows import CLASS_PIXCLA
+from biaflows.helpers import get_discipline, BiaflowsJob, prepare_data, upload_data, upload_metrics
+from biaflows.helpers.data_upload import imwrite, imread
 
 from unet import UNet
 
@@ -52,9 +52,10 @@ def load_model(filepath):
 
 
 def main(argv):
-    with NeubiasJob.from_cli(argv) as nj:
+    with BiaflowsJob.from_cli(argv) as nj:
         problem_cls = get_discipline(nj, default=CLASS_PIXCLA)
         is_2d = True
+        print(nj.parameters)
 
         nj.job.update(status=Job.RUNNING, progress=0, statusComment="Initialisation...")
         in_images, gt_images, in_path, gt_path, out_path, tmp_path = prepare_data(problem_cls, nj, **nj.flags)
